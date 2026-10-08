@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Производители</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        table { border-collapse: collapse; width: 10px; }
+        th, td { border: 1px solid #ccc; padding: 8px; text-align:left; }
+        th { background: #f4f4f4; }
+    </style>
+</head>
+<body>
+<h1>Список производителей</h1>
+<table>
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Название</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="m : ${manufacturers}">
+        <td th:text="${m.id}"></td>
+        <td th:text="${m.title}"></td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>

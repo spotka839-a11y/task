@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: page(title='Админ-панель', content=~{::content})}">
+<body>
+<div th:fragment="content">
+
+    <h1>Админ-панель</h1>
+
+    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 30px;">
+        <div style="background: white; padding: 20px; border-radius: 8px; text-align: center;">
+            <div style="font-size: 36px; font-weight: bold;" th:text="${productCount}"></div>
+            <div>Товаров</div>
+        </div>
+        <div style="background: white; padding: 20px; border-radius: 8px; text-align: center;">
+            <div style="font-size: 36px; font-weight: bold;" th:text="${orderCount}"></div>
+            <div>Заказов</div>
+        </div>
+        <div style="background: white; padding: 20px; border-radius: 8px; text-align: center;">
+            <div style="font-size: 36px; font-weight: bold;" th:text="${userCount}"></div>
+            <div>Пользователей</div>
+        </div>
+        <div style="background: white; padding: 20px; border-radius: 8px; text-align: center;">
+            <div style="font-size: 36px; font-weight: bold;" th:text="${categoryCount}"></div>
+            <div>Категорий</div>
+        </div>
+    </div>
+
+    <h2>Последние 5 заказов</h2>
+    <table>
+        <thead>
+        <tr>
+            <th>№</th>
+            <th>Дата</th>
+            <th>Пользователь</th>
+            <th>Статус</th>
+            <th>Сумма</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="o : ${latestOrders}">
+            <td th:text="${o.id}"></td>
+            <td th:text="${o.createDate}"></td>
+            <td th:text="${o.user != null ? o.user.username : '—'}"></td>
+            <td th:text="${o.status.title}"></td>
+            <td></td>
+            <td><a th:href="@{/admin/orders/{id}(id=${o.id})}">Открыть</a></td>
+        </tr>
+        </tbody>
+    </table>
+
+    <div style="margin-top: 30px;">
+        <a th:href="@{/admin/products}" style="margin-right: 15px;">Товары</a>
+        <a th:href="@{/admin/categories}" style="margin-right: 15px;">Категории</a>
+        <a th:href="@{/admin/orders}">Заказы</a>
+    </div>
+
+</div>
+</body>
+</html>

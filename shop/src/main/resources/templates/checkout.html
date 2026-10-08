@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: page(title='Оформление заказа', content=~{::content})}">
+<body>
+<div th:fragment="content">
+
+  <h1>Оформление заказа</h1>
+
+  <div style="background: white; padding: 20px; border-radius: 8px;">
+    <h2>Ваш заказ</h2>
+    <table>
+      <thead>
+      <tr>
+        <th>Название</th>
+        <th>Цена</th>
+        <th>Количество</th>
+        <th>Итого</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="item : ${cart.items}">
+        <td th:text="${item.title}"></td>
+        <td th:text="${item.price} + ' ₽'"></td>
+        <td th:text="${item.quantity}"></td>
+        <td th:text="${item.total} + ' ₽'"></td>
+      </tr>
+      </tbody>
+    </table>
+
+    <p style="text-align: right; font-size: 20px; margin-top: 20px;">
+      <b>Итого: <span th:text="${cart.total} + ' ₽'"></span></b>
+    </p>
+
+    <form th:action="@{/checkout}" method="post" style="margin-top: 20px;">
+      <div class="form-group">
+        <label>Пункт выдачи *</label>
+        <select name="pickupPointId" required>
+          <option value="">-- Выберите пункт выдачи --</option>
+          <option th:each="pp : ${pickupPoints}"
+                  th:value="${pp.id}"
+                  th:text="${pp.address}"></option>
+        </select>
+      </div>
+
+      <button type="submit" style="background: #28a745; color: white;
+                                          padding: 12px 24px; border: none; border-radius: 4px;">
+        Подтвердить заказ
+      </button>
+    </form>
+  </div>
+
+</div>
+</body>
+</html>

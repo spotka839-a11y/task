@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: page(title='Каталог', content=~{::content})}">
+<body>
+<div th:fragment="content">
+
+  <h1>Каталог</h1>
+
+  <!-- Поиск -->
+  <form th:action="@{/catalog}" method="get" class="search-form">
+    <input type="text" name="search" th:value="${search}" placeholder="Поиск по названию"/>
+    <input type="hidden" name="categoryId" th:if="${selectedCategoryId != null}" th:value="${selectedCategoryId}"/>
+    <input type="hidden" name="sort" th:if="${sort != null}" th:value="${sort}"/>
+    <button type="submit">Найти</button>
+    <a th:if="${search != null && !search.isBlank()}"
+       th:href="@{/catalog(categoryId=${selectedCategoryId}, sort=${sort})}">Сбросить</a>
+  </form>
+
+  <!-- Категории -->
+  <div class="category-list" style="margin-top: 15px;">
+    <a th:href="@{/catalog(search=${search}, sort=${sort})}"
+       th:classappend="${selectedCategoryId == null} ? 'active'">Все</a>
+    <a th:each="c : ${categories}"
+       th:href="@{/catalog(categoryId=${c.id}, search=${search}, sort=${sort})}"
+       th:classappend="${selectedCategoryId != null && selectedCategoryId == c.id} ? 'active'"
+       th:text="${c.title}"></a>
+  </div>
+
+  <!-- Сортировка -->
+  <div class="sort-list" style="margin-top: 15px;">
+    Сортировка:
+    <a th:href="@{/catalog(categoryId=${selectedCategoryId}, search=${search})}"
+       th:classappend="${sort == null} ? 'active'">По названию</a>
+    <a th:href="@{/catalog(categoryId=${selectedCategoryId}, search=${search}, sort='price_asc')}"
+       th:classappend="${sort == 'price_asc'} ? 'active'">По цене (возр.)</a>
+    <a th:href="@{/catalog(categoryId=${selectedCategoryId}, search=${search}, sort='price_desc')}"
+       th:classappend="${sort == 'price_desc'} ? 'active'">По цене (убыв.)</a>
+  </div>
+
+  <p th:if="${products.empty}" style="margin-top: 20px;">Ничего не найдено.</p>
+
+  <div class="product-grid" style="margin-top: 20px;">
+    <th:block th:each="p : ${products.content}">
+      <div th:replace="~{fragments/product-card :: card(${p})}"></div>
+    </th:block>
+  </div>
+
+  <div th:replace="~{fragments/pagination :: pager(${products}, '/catalog', ${selectedCategoryId}, ${search}, ${sort})}"></div>
+
+</div>
+</body>
+</html>

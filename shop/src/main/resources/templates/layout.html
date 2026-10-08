@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:fragment="page(title, content)">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${title}">Магазин канцтоваров</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<header class="site-header">
+    <div class="logo">
+        <a th:href="@{/}">🛒 Магазин канцтоваров</a>
+    </div>
+
+    <nav class="main-nav">
+        <a th:href="@{/}">Главная</a>
+        <a th:href="@{/catalog}">Каталог</a>
+        <a th:href="@{/about}">О магазине</a>
+        <span th:if="${#authorization.expression('hasAnyRole(''Админист'', ''Менеджер'')')}">
+            <a th:href="@{/admin/products}">Управление товарами</a>
+            <a th:href="@{/admin/products/new}">Добавить товар</a>
+        </span>
+        <a th:if="${#authorization.expression('isAuthenticated()')}"
+           th:href="@{/orders}">Мои заказы</a>
+        <a th:if="${#authorization.expression('hasAnyRole(''Админист'', ''Менеджер'')')}"
+           th:href="@{/admin}">Админ-панель</a>
+    </nav>
+
+    <div class="user-box">
+        <span th:if="${#authorization.expression('isAuthenticated()')}">
+            <b th:text="${#authentication.name}">guest</b>
+            <form th:action="@{/logout}" method="post" style="display:inline">
+                <button type="submit">Выйти</button>
+            </form>
+        </span>
+        <a th:if="${!#authorization.expression('isAuthenticated()')}" th:href="@{/login}">Войти</a>
+        <a th:href="@{/cart}">
+            🛒 Корзина
+            <span th:if="${session.cart != null && session.cart.itemCount > 0}"
+                  th:text="'(' + ${session.cart.itemCount} + ')'"></span>
+        </a>
+    </div>
+</header>
+
+<main class="container">
+    <div th:if="${error}" class="alert alert-error" th:text="${error}"></div>
+    <div th:if="${message}" class="alert alert-success" th:text="${message}"></div>
+    <div th:replace="${content}">Содержимое страницы</div>
+</main>
+
+<footer class="site-footer">
+    © 2026 Магазин канцтоваров
+</footer>
+
+</body>
+</html>

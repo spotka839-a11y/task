@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: page(title='Заказ', content=~{::content})}">
+<body>
+<div th:fragment="content">
+
+  <div th:if="${param.success}"
+       style="background: #d4edda; color: #155724; padding: 15px; border-radius: 6px; margin-bottom: 20px;">
+    ✅ Заказ успешно оформлен!
+  </div>
+
+  <h1>Заказ №<span th:text="${order.id}"></span></h1>
+
+  <div style="background: white; padding: 20px; border-radius: 8px;">
+    <p><b>Дата создания:</b> <span th:text="${order.createDate}"></span></p>
+    <p><b>Дата выдачи:</b> <span th:text="${order.deliveryDate}"></span></p>
+    <p><b>Статус:</b> <span th:text="${order.status.title}"></span></p>
+    <p><b>Пункт выдачи:</b> <span th:text="${order.pickupPoint.address}"></span></p>
+    <p style="font-size: 24px; color: #0066cc;">
+      <b>Код выдачи: <span th:text="${order.getCode}"></span></b>
+    </p>
+
+    <h2>Состав заказа</h2>
+    <table>
+      <thead>
+      <tr>
+        <th>Товар</th>
+        <th>Цена</th>
+        <th>Количество</th>
+        <th>Итого</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="item : ${order.items}">
+        <td th:text="${item.product.title}"></td>
+        <td th:text="${item.product.cost} + ' ₽'"></td>
+        <td th:text="${item.count}"></td>
+        <td th:text="${item.product.cost * item.count} + ' ₽'"></td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
+</body>
+</html>

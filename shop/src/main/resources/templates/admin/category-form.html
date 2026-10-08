@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Редактировать категорию</title>
+  <style>.error { color: red; }</style>
+</head>
+<body>
+<h1>Редактировать категорию</h1>
+<form th:action="@{/admin/categories/edit/{id}(id=${categoryForm.id})}"
+      th:object="${categoryForm}" method="post">
+  <input type="hidden" th:field="*{id}"/>
+  <label>Название *</label><br>
+  <input type="text" th:field="*{title}"/>
+  <span class="error" th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></span>
+  <br><br>
+  <button type="submit">Сохранить</button>
+  <a th:href="@{/categories-page}">Отмена</a>
+</form>
+<a th:href="@{/admin/categories/edit/{id}(id=${c.id})}">Редактировать</a>
+<form th:action="@{/admin/categories/delete/{id}(id=${c.id})}" method="post" style="display:inline">
+  <button type="submit" onclick="return confirm('Удалить категорию?')">Удалить</button>
+</form>
+</body>
+</html>

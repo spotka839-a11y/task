@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Профиль</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 500px; margin: 40px auto; }
+        table { width: 100%; border-collapse: collapse; }
+        td { padding: 8px; border-bottom: 1px solid #ddd; }
+        td:first-child { font-weight: bold; width: 40%; }
+    </style>
+</head>
+<body>
+<h1>Мой профиль</h1>
+
+<table>
+    <tr><td>Логин</td><td th:text="${user.username}"></td></tr>
+    <tr><td>Имя</td><td th:text="${user.firstName}"></td></tr>
+    <tr><td>Фамилия</td><td th:text="${user.secondName}"></td></tr>
+    <tr><td>Отчество</td><td th:text="${user.middleName != null ? user.middleName : '—'}"></td></tr>
+    <tr><td>Email</td><td th:text="${user.email != null ? user.email : '—'}"></td></tr>
+    <tr><td>Роль</td><td th:text="${user.role != null ? user.role.title : '—'}"></td></tr>
+    <tr><td>Дата регистрации</td><td th:text="${registeredAt != '' ? registeredAt : '—'}"></td></tr>
+</table>
+
+<p>
+    <a th:href="@{/products-jpa-page}">К товарам</a>
+</p>
+<form th:action="@{/logout}" method="post">
+    <button type="submit">Выйти</button>
+</form>
+</body>
+</html>

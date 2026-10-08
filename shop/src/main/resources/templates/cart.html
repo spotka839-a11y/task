@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: page(title='Корзина', content=~{::content})}">
+<body>
+<div th:fragment="content">
+
+  <h1>Корзина</h1>
+
+  <div th:if="${cart.isEmpty()}" style="padding: 30px; background: white;
+                                             text-align: center; border-radius: 8px;">
+    <p>Корзина пуста</p>
+    <a th:href="@{/catalog}">Перейти в каталог</a>
+  </div>
+
+  <div th:if="${!cart.isEmpty()}">
+    <table>
+      <thead>
+      <tr>
+        <th>Фото</th>
+        <th>Название</th>
+        <th>Цена</th>
+        <th>Количество</th>
+        <th>Итого</th>
+        <th></th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="item : ${cart.items}">
+        <td>
+          <img th:src="@{/product/{id}/photo(id=${item.productId})}"
+               style="width: 50px; height: 50px; object-fit: contain;"/>
+        </td>
+        <td>
+          <a th:href="@{/product/{id}(id=${item.productId})}"
+             th:text="${item.title}"></a>
+        </td>
+        <td th:text="${item.price} + ' ₽'"></td>
+        <td>
+          <form th:action="@{/cart/update}" method="post" style="display: flex; gap: 5px;">
+            <input type="hidden" name="productId" th:value="${item.productId}"/>
+            <input type="number" name="quantity" th:value="${item.quantity}"
+                   min="1" style="width: 60px;"/>
+            <button type="submit">↻</button>
+          </form>
+        </td>
+        <td th:text="${item.total} + ' ₽'"></td>
+        <td>
+          <form th:action="@{/cart/remove}" method="post">
+            <input type="hidden" name="productId" th:value="${item.productId}"/>
+            <button type="submit">Удалить</button>
+          </form>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+
+    <div style="margin-top: 20px; text-align: right; font-size: 20px;">
+      <b>Итого: <span th:text="${cart.total} + ' ₽'"></span></b>
+    </div>
+
+    <div style="margin-top: 20px; display: flex; justify-content: space-between;">
+      <form th:action="@{/cart/clear}" method="post">
+        <button type="submit" onclick="return confirm('Очистить корзину?')">
+          Очистить
+        </button>
+      </form>
+      <a th:href="@{/checkout}"
+         style="background: #28a745; color: white; padding: 10px 20px; border-radius: 4px;">
+        Оформить заказ
+      </a>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: page(title='Заказ оформлен', content=~{::content})}">
+<body>
+<div th:fragment="content">
+
+  <div style="background: white; padding: 40px; border-radius: 8px; text-align: center;">
+    <h1>✅ Заказ оформлен!</h1>
+
+    <p style="font-size: 20px;">
+      Номер заказа: <b th:text="${order.id}"></b>
+    </p>
+
+    <p>Код выдачи:</p>
+    <p style="font-size: 48px; color: #0066cc; margin: 10px 0;">
+      <b th:text="${order.getCode}"></b>
+    </p>
+
+    <p>Пункт выдачи: <span th:text="${order.pickupPoint.address}"></span></p>
+    <p>Получить заказ можно до <span th:text="${order.deliveryDate}"></span></p>
+
+    <div style="margin-top: 30px;">
+      <a th:href="@{/catalog}"
+         style="background: #28a745; color: white; padding: 10px 20px; border-radius: 4px;">
+        Перейти в каталог
+      </a>
+      <a th:href="@{/orders/{id}(id=${order.id})}" style="margin-left: 15px;">Подробнее о заказе</a>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

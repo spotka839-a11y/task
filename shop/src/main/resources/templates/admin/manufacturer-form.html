@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Производитель</title>
+    <style>.error { color: red; }</style>
+</head>
+<body>
+<h1>Добавить производителя</h1>
+<form th:action="@{/admin/manufacturers/new}" th:object="${manufacturerForm}" method="post">
+    <label>Название *</label><br>
+    <input type="text" th:field="*{title}"/>
+    <span class="error" th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></span>
+    <br><br>
+    <button type="submit">Сохранить</button>
+    <a th:href="@{/manufacturers-page}">Отмена</a>
+</form>
+</body>
+</html>

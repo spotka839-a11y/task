@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: page(title='Добавить товар', content=~{::content})}">
+<body>
+<div th:fragment="content">
+    <h1 th:text="${editMode != null && editMode ? 'Редактировать товар' : 'Добавить товар'}"></h1>
+
+    <form th:action="${editMode != null && editMode}
+                       ? @{/admin/products/edit/{id}(id=*{id})}
+                       : @{/admin/products/new}"
+          th:object="${productForm}" method="post" enctype="multipart/form-data">
+
+        <div class="form-group">
+            <label>Артикул *</label>
+            <input type="text" th:field="*{id}"
+                   th:readonly="${editMode != null && editMode}"/>
+            <span class="error" th:if="${#fields.hasErrors('id')}" th:errors="*{id}"></span>
+        </div>
+
+        <!-- остальные поля без изменений -->
+        <!-- ... -->
+
+        <button type="submit">Сохранить</button>
+        <a th:href="@{/admin/products}">Отмена</a>
+    </form>
+</div>
+</body>
+</html>

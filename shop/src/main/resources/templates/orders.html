@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: page(title='Все заказы', content=~{::content})}">
+<body>
+<div th:fragment="content">
+
+    <h1>Все заказы</h1>
+
+    <p th:if="${orders.isEmpty()}">Заказов пока нет.</p>
+
+    <table th:if="${!orders.isEmpty()}">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Пользователь</th>
+            <th>Статус</th>
+            <th>Дата</th>
+            <th>Код выдачи</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="o : ${orders}">
+            <td th:text="${o.id}"></td>
+            <td th:text="${o.user != null ? o.user.username : '—'}"></td>
+            <td th:text="${o.status.title}"></td>
+            <td th:text="${o.createDate}"></td>
+            <td th:text="${o.getCode}"></td>
+            <td><a th:href="@{/admin/orders/{id}(id=${o.id})}">Подробнее</a></td>
+        </tr>
+        </tbody>
+    </table>
+
+</div>
+</body>
+</html>

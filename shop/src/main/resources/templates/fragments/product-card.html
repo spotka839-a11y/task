@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<div th:fragment="card(p)" class="product-card">
+  <img th:src="@{/product/{id}/photo(id=${p.id})}" alt="Фото"/>
+  <a th:href="@{/product/{id}(id=${p.id})}" th:text="${p.title}">Название</a>
+  <span class="price" th:text="${p.cost} + ' ₽'">0 ₽</span>
+</div>
+
+</body>
+</html>

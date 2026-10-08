@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: page(title='Товар', content=~{::content})}">
+<body>
+<div th:fragment="content">
+
+  <div style="display: flex; gap: 30px; background: white; padding: 20px; border-radius: 8px;">
+
+    <div style="flex: 1; max-width: 400px;">
+      <img th:src="@{/product/{id}/photo(id=${product.id})}"
+           alt="Фото"
+           style="width: 100%; border-radius: 8px;"/>
+    </div>
+
+    <div style="flex: 2;">
+      <h1 th:text="${product.title}">Название</h1>
+      <p th:if="${product.description != null}"
+         th:text="${product.description}">Описание</p>
+
+      <p>
+        <b>Категория:</b>
+        <span th:text="${product.category != null ? product.category.title : '—'}"></span>
+      </p>
+
+      <p>
+        <b>В наличии:</b>
+        <span th:text="${product.quantityInStock}"></span> шт.
+      </p>
+
+      <p style="font-size: 24px; color: #0066cc;">
+        <b th:text="${product.cost} + ' ₽'"></b>
+      </p>
+
+      <form th:action="@{/cart/add}" method="post" style="margin-top: 20px;">
+        <input type="hidden" name="productId" th:value="${product.id}"/>
+        <label>Количество:</label>
+        <input type="number" name="quantity" value="1" min="1"
+               th:max="${product.quantityInStock}" style="width: 80px;"/>
+        <button type="submit"
+                th:disabled="${product.quantityInStock == 0}">
+          <span th:if="${product.quantityInStock > 0}">В корзину</span>
+          <span th:if="${product.quantityInStock == 0}">Нет в наличии</span>
+        </button>
+      </form>
+
+
+
+      <a th:href="@{/catalog}">← Назад в каталог</a>
+    </div>
+
+  </div>
+
+</div>
+</body>
+</html>

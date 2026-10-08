@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: page(title='Заказы', content=~{::content})}">
+<body>
+<div th:fragment="content">
+
+  <h1>Все заказы</h1>
+
+  <div style="margin-bottom: 20px;">
+    <a th:href="@{/admin/orders}"
+       th:classappend="${selectedStatusId == null} ? 'active'"
+       style="padding: 6px 12px; border-radius: 16px; border: 1px solid #ccc; margin-right: 8px;">
+      Все
+    </a>
+    <a th:each="s : ${statuses}"
+       th:href="@{/admin/orders(statusId=${s.id})}"
+       th:classappend="${selectedStatusId != null && selectedStatusId == s.id} ? 'active'"
+       th:text="${s.title}"
+       style="padding: 6px 12px; border-radius: 16px; border: 1px solid #ccc; margin-right: 8px;"></a>
+  </div>
+
+  <table>
+    <thead>
+    <tr>
+      <th>№</th>
+      <th>Дата</th>
+      <th>Пользователь</th>
+      <th>Пункт выдачи</th>
+      <th>Статус</th>
+      <th>Код выдачи</th>
+      <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="o : ${orders}">
+      <td th:text="${o.id}"></td>
+      <td th:text="${o.createDate}"></td>
+      <td th:text="${o.user != null ? o.user.username : '—'}"></td>
+      <td th:text="${o.pickupPoint.address}"></td>
+      <td th:text="${o.status.title}"></td>
+      <td th:text="${o.getCode}"></td>
+      <td><a th:href="@{/admin/orders/{id}(id=${o.id})}">Открыть</a></td>
+    </tr>
+    </tbody>
+  </table>
+
+</div>
+</body>
+</html>

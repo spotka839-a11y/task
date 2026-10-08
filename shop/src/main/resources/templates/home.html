@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: page(title='Главная', content=~{::content})}">
+<body>
+<div th:fragment="content">
+
+  <h1>Добро пожаловать в магазин канцтоваров!</h1>
+
+  <h2>Категории</h2>
+  <div class="category-list">
+    <a th:each="c : ${categories}"
+       th:href="@{/catalog(categoryId=${c.id})}"
+       th:text="${c.title}">Категория</a>
+  </div>
+
+  <h2 style="margin-top: 30px;">Популярные товары</h2>
+  <div class="product-grid">
+    <th:block th:each="p : ${products}">   <!-- в catalog.html: ${products.content} -->
+      <div th:replace="~{fragments/product-card :: card(${p})}"></div>
+    </th:block>
+  </div>
+
+  <form th:action="@{/cart/add}" method="post" style="margin-top: 10px;">
+    <input type="hidden" name="productId" th:value="${p.id}"/>
+    <input type="hidden" name="quantity" value="1"/>
+    <button type="submit"
+            th:disabled="${p.quantityInStock == 0}">
+      <span th:if="${p.quantityInStock > 0}">В корзину</span>
+      <span th:if="${p.quantityInStock == 0}">Нет</span>
+    </button>
+  </form>
+
+</div>
+</body>
+</html>

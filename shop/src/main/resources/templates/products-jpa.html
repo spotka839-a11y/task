@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: page(title='Товары', content=~{::content})}">
+<body>
+<div th:fragment="content">
+  <h1>Список товаров</h1>
+
+  <table>
+    <thead>
+    <tr>
+      <th>ID</th>
+      <th>Название</th>
+      <th>Цена</th>
+      <th>Остаток</th>
+      <th>Категория</th>
+      <th th:if="${#authorization.expression('hasRole(''Админист'')')}">Действия</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="p : ${products}">
+      <td th:text="${p.id}"></td>
+      <td>
+        <a th:href="@{/product/{id}(id=${p.id})}" th:text="${p.title}"></a>
+      </td>
+      <td th:text="${p.cost}"></td>
+      <td th:text="${p.quantityInStock}"></td>
+      <td th:text="${p.category != null ? p.category.title : '—'}"></td>
+      <td th:if="${#authorization.expression('hasRole(''Админист'')')}">
+        <a th:href="@{/admin/products/edit/{id}(id=${p.id})}">Редактировать</a>
+        <form th:action="@{/admin/products/delete/{id}(id=${p.id})}" method="post" style="display:inline">
+          <button type="submit" onclick="return confirm('Удалить товар?')">Удалить</button>
+        </form>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+</body>
+</html>

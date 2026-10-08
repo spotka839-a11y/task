@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: page(title='Заказ', content=~{::content})}">
+<body>
+<div th:fragment="content">
+
+  <h1>Заказ №<span th:text="${order.id}"></span></h1>
+
+  <div style="background: white; padding: 20px; border-radius: 8px;">
+    <p><b>Пользователь:</b> <span th:text="${order.user != null ? order.user.username : '—'}"></span></p>
+    <p><b>Дата создания:</b> <span th:text="${order.createDate}"></span></p>
+    <p><b>Дата выдачи:</b> <span th:text="${order.deliveryDate}"></span></p>
+    <p><b>Пункт выдачи:</b> <span th:text="${order.pickupPoint.address}"></span></p>
+    <p><b>Код выдачи:</b> <span th:text="${order.getCode}"></span></p>
+
+    <p>
+      <b>Статус:</b>
+      <span th:text="${order.status.title}"></span>
+    </p>
+
+    <form th:action="@{/admin/orders/{id}/status(id=${order.id})}" method="post"
+          style="margin-top: 10px;">
+      <label>Изменить статус:</label>
+      <select name="statusId" required>
+        <option th:each="s : ${statuses}"
+                th:value="${s.id}"
+                th:text="${s.title}"
+                th:selected="${s.id == order.status.id}"></option>
+      </select>
+      <button type="submit">Сохранить</button>
+    </form>
+
+    <h2 style="margin-top: 30px;">Состав заказа</h2>
+    <table>
+      <thead>
+      <tr>
+        <th>Товар</th>
+        <th>Цена</th>
+        <th>Количество</th>
+        <th>Итого</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="item : ${order.items}">
+        <td th:text="${item.product.title}"></td>
+        <td th:text="${item.product.cost} + ' ₽'"></td>
+        <td th:text="${item.count}"></td>
+        <td th:text="${item.product.cost * item.count} + ' ₽'"></td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
+</body>
+</html>
