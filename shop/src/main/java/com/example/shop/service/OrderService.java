@@ -79,6 +79,17 @@ public class OrderService {
         }
         return order;
     }
+
+    public List<Order> findMyOrders() {
+        String username = SecurityUtils.getCurrentUsername();
+        if (username == null) {
+            throw new SecurityException("Необходимо войти в систему");
+        }
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new IllegalArgumentException("Пользователь не найден"));
+        return orderRepository.findByUserOrderByCreateDateDesc(user);
+    }
+
     public Order findById(Integer id) {
         return orderRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Заказ не найден"));

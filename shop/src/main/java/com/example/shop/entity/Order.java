@@ -2,7 +2,6 @@ package com.example.shop.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
-import org.springframework.boot.info.SslInfo;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -19,7 +18,7 @@ public class Order {
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "status_id", nullable = false)
-    private SslInfo.CertificateValidityInfo.Status status;
+    private Status status;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "pickuppoint_id", nullable = false)
@@ -49,11 +48,9 @@ public class Order {
         this.id = id;
     }
 
-    public SslInfo.CertificateValidityInfo.Status getStatus() {
+    public Status getStatus() {
         return status;
     }
-
-
 
     public PickupPoint getPickupPoint() {
         return pickupPoint;
@@ -105,9 +102,5 @@ public class Order {
 
     public Status setStatus(Status newStatus) {
         return newStatus;
-    }
-
-    public void setStatus(SslInfo.CertificateValidityInfo.Status status) {
-        this.status = status;
     }
 }

@@ -6,9 +6,11 @@ import com.example.shop.entity.Product;
 import com.example.shop.repository.CategoryRepository;
 import com.example.shop.repository.ProductRepository;
 import com.example.shop.util.FileUtils;
-import com.example.shop.util.SecurityUtils;
 import com.example.shop.util.StringUtils;
 import com.example.shop.util.ValidationUtils;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.logging.log4j.Logger;
+import org.hibernate.validator.internal.util.logging.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -16,11 +18,12 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-
 import java.util.List;
 
+@Slf4j
 @Service
 public class ProductService {
+    private static final Logger log = LoggerFactory.getLogger(ProductService.class);
 
     @Autowired
     private ProductRepository productRepository;
@@ -39,25 +42,33 @@ public class ProductService {
 
     @Transactional
     public Product createFromForm(ProductForm form) {
-        Product product = new Product();
-        product.setId(form.getId());
-        product.setTitle(ValidationUtils.normalize(form.getTitle()));
-        product.setCost(form.getCost());
-        product.setQuantityInStock(form.getQuantityInStock());
-        product.setDescription(ValidationUtils.normalize(form.getDescription()));
-        product.setDescription(StringUtils.truncate(ValidationUtils.normalize(form.getDescription()), 100));
+        log.info("Создание товара: id={}, title={}", form.getId(), form.getTitle());
 
-        Category category = categoryRepository.findById(form.getCategoryId())
-                .orElseThrow(() -> new IllegalArgumentException("Категория не найдена"));
-        product.setCategory(category);
+        try {
+            Product product = new Product();
+            product.setId(form.getId());
+            product.setTitle(ValidationUtils.normalize(form.getTitle()));
+            product.setCost(form.getCost());
+            product.setQuantityInStock(form.getQuantityInStock());
+            product.setDescription(ValidationUtils.normalize(form.getDescription()));
+            product.setDescription(StringUtils.truncate(ValidationUtils.normalize(form.getDescription()), 100));
 
-        // Используем утилиту для чтения файла
-        product.setPhoto(FileUtils.readBytes(form.getPhotoFile()));
+            Category category = categoryRepository.findById(form.getCategoryId())
+                    .orElseThrow(() -> new IllegalArgumentException("Категория не найдена"));
+            product.setCategory(category);
 
+            // Используем утилиту для чтения файла
+            product.setPhoto(FileUtils.readBytes(form.getPhotoFile()));
 
-        return product;
+            Product saved = productRepository.save(product);
+            log.info("Товар успешно создан: id={}", saved.getId());
+            return saved;
+
+        } catch (Exception e) {
+            log.error("Ошибка создания товара: id={}", form.getId(), e);
+            throw e;
+        }
     }
-
 
     @Transactional
     public Product updateFromForm(String id, ProductForm form) {
@@ -83,11 +94,15 @@ public class ProductService {
 
     @Transactional
     public void deleteById(String id) {
+        log.warn("Удаление товара: id={}", id);
         productRepository.deleteById(id);
+        log.info("Товар удалён: id={}", id);
     }
+
     public List<Product> findPopular(int limit) {
         return productRepository.findAll(PageRequest.of(0, limit)).getContent();
     }
+
     public Page<Product> findPage(Integer categoryId, String search, String sort, int page, int size) {
         PageRequest pageRequest = PageRequest.of(page, size, resolveSort(sort));
         boolean hasSearch = search != null && !search.isBlank();
@@ -114,7 +129,12 @@ public class ProductService {
             default           -> Sort.by("title").ascending();
         };
     }
+
     public List<Product> searchByTitle(String query) {
         return productRepository.findByTitleContainingIgnoreCase(query);
+    }
+
+    public Page<Product> findPage(int page, int size) {
+        return productRepository.findAll(PageRequest.of(page, size));
     }
 }

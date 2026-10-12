@@ -10,64 +10,46 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Controller;   // <-- ИЗМЕНЕНО
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+// УБРАН импорт RestController
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-@RestController
+@Controller   // <-- ИЗМЕНЕНО с @RestController на @Controller
 public class ProductController {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
+
+    @Autowired   // <-- ДОБАВЛЕНО
     private CategoryService categoryService;
+
+    @Autowired   // <-- ДОБАВЛЕНО
     private ProductService productService;
 
+    @Autowired
+    private ResourceLoader resourceLoader;
+
     @GetMapping("/products")
+    @org.springframework.web.bind.annotation.ResponseBody   // <-- ДОБАВЛЕНО, чтобы этот метод всё ещё возвращал JSON
     public List<Map<String, Object>> products() {
         return jdbcTemplate.queryForList(
                 "SELECT id, title, cost, quantity_in_stock FROM product LIMIT 10"
         );
     }
+
     @GetMapping("/product/{id}")
     public String productDetails(@PathVariable String id, Model model) {
         Product product = productService.findById(id);
         model.addAttribute("product", product);
         return "product-details";
     }
-
-//    @GetMapping("/product/{id}/photo")
-//    public ResponseEntity<byte[]> productPhoto(@PathVariable String id) {
-//        Product product = productService.findById(id);
-//        byte[] photo = product.getPhoto();
-//
-//        if (photo == null || photo.length == 0) {
-//            // Заглушка: 1x1 прозрачный PNG
-//            byte[] placeholder = new byte[]{
-//                    (byte) 0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A
-//                    // (сокращённый массив — для простоты лучше сгенерировать картинку-заглушку)
-//            };
-//            return ResponseEntity.ok()
-//                    .contentType(MediaType.IMAGE_PNG)
-//                    .body(placeholder);
-//        }
-//
-//        // Определить тип по первым байтам (JPEG или PNG)
-//        MediaType mediaType = detectImageType(photo);
-//
-//        return ResponseEntity.ok()
-//                .contentType(mediaType)
-//                .header(HttpHeaders.CACHE_CONTROL, "max-age=86400")
-//                .body(photo);
-//    }
-
-    @Autowired
-    private ResourceLoader resourceLoader;
 
     @GetMapping("/product/{id}/photo")
     public ResponseEntity<byte[]> productPhoto(@PathVariable String id) throws IOException {
@@ -97,6 +79,7 @@ public class ProductController {
         }
         return MediaType.IMAGE_PNG;
     }
+
     @GetMapping("/catalog")
     public String catalog(@RequestParam(required = false) Integer categoryId,
                           @RequestParam(required = false) String search,

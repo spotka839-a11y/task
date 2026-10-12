@@ -21,31 +21,7 @@
 <body>
 <div class="login-box">
     <h1>Вход</h1>
-    <!-- ===== 1. login.html: добавьте рядом с блоками error/success ===== -->
     <div class="success" th:if="${param.registered}">Регистрация прошла успешно. Войдите.</div>
-
-    <!-- и под формой входа: -->
-    <div style="text-align:center; margin-top:15px;">
-        Нет аккаунта? <a th:href="@{/register}">Зарегистрироваться</a>
-    </div>
-
-
-    <!-- ===== 2. products-jpa.html: ссылка на профиль в блоке "Вы вошли как" ===== -->
-    Вы вошли как: <a th:href="@{/profile}"><b th:text="${#authentication.name}">guest</b></a>
-
-
-    <!-- ===== 3. products-jpa.html: кнопки только для Админист ===== -->
-    <!-- ссылка «Редактировать» в строке товара -->
-    <a th:if="${#authorization.expression('hasRole(''Админист'')')}"
-       th:href="@{/admin/products/edit/{id}(id=${p.id})}">Редактировать</a>
-
-    <!-- форма «Удалить» в строке товара -->
-    <form th:if="${#authorization.expression('hasRole(''Админист'')')}"
-          th:action="@{/admin/products/delete/{id}(id=${p.id})}" method="post" style="display:inline;">
-        <button type="submit">Удалить</button>
-    </form>
-    <!-- Пути /admin/products/... замените на те, что у вас в контроллере. -->
-
     <div class="error" th:if="${param.error}">Неверный логин или пароль</div>
     <div class="success" th:if="${param.logout}">Вы вышли из системы</div>
 
@@ -60,6 +36,10 @@
         </div>
         <button type="submit">Войти</button>
     </form>
+
+    <div style="text-align:center; margin-top:15px;">
+        Нет аккаунта? <a th:href="@{/register}">Зарегистрироваться</a>
+    </div>
 </div>
 </body>
 </html>

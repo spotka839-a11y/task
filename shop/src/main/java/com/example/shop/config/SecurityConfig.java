@@ -2,6 +2,7 @@ package com.example.shop.config;
 
 import com.example.shop.entity.User;
 import com.example.shop.repository.UserRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,6 +15,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
+@Slf4j
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
@@ -38,7 +40,6 @@ public class SecurityConfig {
                     .roles(user.getRole() != null ? user.getRole().getTitle() : "Клиент")
                     .build();
         };
-
     }
 
     @Bean
@@ -68,8 +69,7 @@ public class SecurityConfig {
                         .logoutSuccessUrl("/products-jpa-page")
                         .permitAll()
                 );
-                
+
         return http.build();
     }
-
 }

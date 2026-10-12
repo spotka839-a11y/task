@@ -1,9 +1,11 @@
 package com.example.shop.controller.api;
 
+import com.example.shop.dto.PageDto;
 import com.example.shop.dto.ProductDto;
 import com.example.shop.entity.Product;
 import com.example.shop.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,10 +21,17 @@ public class ProductApiController {
     private ProductService productService;
 
     @GetMapping
-    public List<ProductDto> list() {
-        return productService.findAll().stream()
+    public PageDto<ProductDto> list(@RequestParam(defaultValue = "0") int page,
+                                    @RequestParam(defaultValue = "20") int size) {
+        if (page < 0) page = 0;
+        if (size < 1) size = 20;
+        if (size > 100) size = 100;
+
+        Page<Product> result = productService.findPage(page, size);
+        List<ProductDto> content = result.getContent().stream()
                 .map(this::toDto)
                 .collect(Collectors.toList());
+        return new PageDto<>(content, result.getTotalPages(), result.getTotalElements());
     }
 
     @GetMapping("/{id}")

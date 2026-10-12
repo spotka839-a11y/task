@@ -1,11 +1,11 @@
 package com.example.shop.controller.api;
 
 import com.example.shop.entity.Order;
-import com.example.shop.entity.Status;
 import com.example.shop.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -24,14 +24,14 @@ public class OrderApiController {
                 .collect(Collectors.toList());
     }
 
-    private Map<String, Object> toMap(Order o, Status s) {
-        return Map.of(
-                "id", o.getId(),
-                "status", s.getTitle(),
-                "createDate", o.getCreateDate().toString(),
-                "deliveryDate", o.getDeliveryDate().toString(),
-                "pickupPoint", o.getPickupPoint().getAddress(),
-                "getCode", o.getGetCode()
-        );
+    private Map<String, Object> toMap(Order o) {
+        Map<String, Object> m = new LinkedHashMap<>();
+        m.put("id", o.getId());
+        m.put("status", o.getStatus() != null ? o.getStatus().getTitle() : null);
+        m.put("createDate", o.getCreateDate() != null ? o.getCreateDate().toString() : null);
+        m.put("deliveryDate", o.getDeliveryDate() != null ? o.getDeliveryDate().toString() : null);
+        m.put("pickupPoint", o.getPickupPoint() != null ? o.getPickupPoint().getAddress() : null);
+        m.put("getCode", o.getGetCode());
+        return m;
     }
 }
